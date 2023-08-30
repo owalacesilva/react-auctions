@@ -20,10 +20,29 @@ import saga from './saga';
 import messages from './messages';
 import AuctionListItem from '../../components/AuctionListItem/Loadable';
 import QRCode from 'react-qr-code';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 export function CheckoutPage() {
   useInjectReducer({ key: 'checkoutPage', reducer });
   useInjectSaga({ key: 'checkoutPage', saga });
+
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      console.log(user)
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = user.uid;
+        // ...
+        console.log("uid", uid)
+      } else {
+        // User is signed out
+        // ...
+        console.log("user is logged out")
+      }
+    });
+  }, []);
 
   return (
     <div>
@@ -72,7 +91,7 @@ export function CheckoutPage() {
                         <span className="font-xs"> Copie o código PIX abaixo.</span>
                       </div>
                       <div className="input-group mb-2">
-                        <input type="text" className="form-control" readonly="" value="00020126570014br.gov.bcb.pix0111811177100250220testede envio de pix52040000530398654041.235802BR5914testechave cpf6008saopaulo62070503***6304E067" />
+                        <input type="text" className="form-control" readOnly="" value="00020126570014br.gov.bcb.pix0111811177100250220testede envio de pix52040000530398654041.235802BR5914testechave cpf6008saopaulo62070503***6304E067" />
                         <div className="input-group-append">
                           <button className="app-btn btn btn-success rounded-0 rounded-end">Copiar</button>
                         </div>
