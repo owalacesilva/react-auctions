@@ -12,21 +12,21 @@ import ProductImage from './../../images/product-image.jpg';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
-function AuctionListItem() {
+function AuctionListItem({ product }) {
   return (
     <div className="card-product">
       <div className="card mb-2">
         <div className="row align-items-start g-0">
           <div className="col-md-3 col-4 px-2 py-2">
-            <img src={ProductImage} className="img-fluid rounded" />
+            <img src={product.images['url']} className="img-fluid rounded" />
           </div>
           <div className="col-md-9 col-8">
             <div className="card-body p-2">
               <h5 className="card-title">
-                Product title
+                {product.title}
               </h5>
               <p className="card-text m-1">
-                This is a wider card
+                {product.description}
               </p>
               <span className="badge bg-success font-xsss">Adquira já!</span>
             </div>
