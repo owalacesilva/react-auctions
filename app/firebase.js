@@ -1,18 +1,21 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { useState, useEffect, useContext, createContext } from 'react';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCq7jMOkNJ4NGPHbkXZE2sCSupmuwpR_yc',
-  authDomain: 'localhost',
-  projectId: 'sorteadus',
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
 
-export const AuthContext = createContext();
-
 export const auth = getAuth(firebaseApp);
+
+export const store = getFirestore(firebaseApp);
+
+export const AuthContext = createContext();
 
 export const AuthContextProvider = props => {
   const [user, setUser] = useState();
@@ -28,5 +31,5 @@ export const AuthContextProvider = props => {
 
 export const useAuthState = () => {
   const authz = useContext(AuthContext);
-  return { ...authz, isAuthenticated: auth.user != null };
+  return { ...authz, isAuthenticated: authz.user != null };
 };
