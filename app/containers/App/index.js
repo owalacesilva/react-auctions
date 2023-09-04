@@ -74,8 +74,8 @@ export default function App() {
           <Route exact path="/" component={AuctionListPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
-          <Route path="/sorteio" component={AuctionDetailPage} />
-          <AuthenticatedRoute path="/checkout" component={CheckoutPage}/>
+          <Route path="/sorteio/:slug" component={AuctionDetailPage} />
+          <Route path="/order/:orderId" component={CheckoutPage}/>
           <Route path="" component={NotFoundPage} />
         </Switch>
       </BrowserRouter>
