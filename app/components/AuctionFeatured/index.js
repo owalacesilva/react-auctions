@@ -12,7 +12,7 @@ import ProductImage from './../../images/product-image.jpg';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
-function AuctionFeatured() {
+function AuctionFeatured({ product }) {
   return (
     <div>
       <div className="card mb-2">
@@ -20,17 +20,17 @@ function AuctionFeatured() {
           <div className="carousel-inner">
             <div className="carousel-item active">
               <div className="card-feature-image">
-                <img src={ProductImage} className="card-img-top" />
+                <img src={product.images['url']} className="card-img-top" />
               </div>
             </div>
             <div className="carousel-item">
               <div className="card-feature-image">
-                <img src={ProductImage} className="card-img-top" />
+                <img src={product.images['url']} className="card-img-top" />
               </div>
             </div>
             <div className="carousel-item">
               <div className="card-feature-image">
-                <img src={ProductImage} className="card-img-top" />
+                <img src={product.images['url']} className="card-img-top" />
               </div>
             </div>
           </div>
@@ -45,9 +45,9 @@ function AuctionFeatured() {
         </div>
         <div className="card-body p-2">
           <h5 className="card-title">
-            Product title
+            {product.title}
           </h5>
-          <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          <p className="card-text">{product.description}</p>
           <span className="badge bg-dark font-xsss">Corre que está acabando!</span>
         </div>
       </div>
