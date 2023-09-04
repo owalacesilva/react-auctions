@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -23,10 +23,67 @@ import saga from './saga';
 import messages from './messages';
 import AuctionFeatured from '../../components/AuctionFeatured/Loadable';
 import CheckoutModal from '../CheckoutModal/Loadable';
+import { addDoc, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { store } from '../../firebase';
 
-export function AuctionDetailPage() {
+export function AuctionDetailPage({
+  match,
+  history
+}) {
   useInjectReducer({ key: 'auctionDetailPage', reducer });
   useInjectSaga({ key: 'auctionDetailPage', saga });
+  
+  const { slug: productSlug } = match.params;
+  const [product, setProduct] = useState(null);
+  const [quotesQuantity, setQuotesQuantity] = useState(1);
+  const [openCheckout, setOpenCheckout] = useState(false);
+
+  const getProduct = async (slug) => {
+    const docRef = doc(store, 'products', slug);
+    const snapshot = await getDoc(docRef);
+
+    if (snapshot.exists()) {
+      setProduct(snapshot.data());
+    } else {
+      throw new Error('Product not found');
+    }
+  }
+
+  const createOrder = async ({ providerData /* loggedUser */}) => {
+    const userData = providerData.shift();
+
+    const collectionRef = collection(store, 'orders');
+    const docRef = await addDoc(collectionRef, {
+      created_at: new Date(), // TODO: use firebase api
+      user_buyer: userData,
+      product: product,
+      status: 'active',
+      // ...createPaymentInvoice(product)
+      payment: {
+        invoice_url: 'PIX_URL' // TODO: generate QRCode
+      },
+      // ...generateQuotes(product, quotesQuantity)
+      quotes: quotesQuantity, // TODO: generate quotes
+      total: quotesQuantity * 25.0
+    });
+
+    return docRef;
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setOpenCheckout(true);
+  }
+
+  const handleCreateOrder = (loggedUser) => {
+    createOrder(loggedUser).then((newOrder) => {
+      history.push(`/order/${newOrder.id}`);
+    });
+  }
+
+  useEffect(() => {
+    getProduct(productSlug);
+  }, [productSlug]);
 
   return (
     <div>
@@ -38,7 +95,7 @@ export function AuctionDetailPage() {
       <div className="container container-common px-0">
         <div className="main-content py-3">
           <div>
-            <AuctionFeatured />
+            {product && <AuctionFeatured product={product} /> }
           </div>
           <div className="row">
             <div className="col-12 text-center mb-3">
@@ -63,7 +120,7 @@ export function AuctionDetailPage() {
               <span>Ver meus números</span>
             </button>
           </div>
-          <Form action="/checkout" method="get">
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="quantity">
               <div className="card my-2">
                 <div className="card-body">
@@ -150,7 +207,16 @@ export function AuctionDetailPage() {
           </Form>
         </div>
       </div>
-      <CheckoutModal />
+      {
+        openCheckout && (
+          <CheckoutModal
+            data={{
+              product,
+              quotesQuantity: 10
+            }}
+            onRequestCreateOrder={handleCreateOrder}/>
+        )
+      }
     </div>
   );
 }
