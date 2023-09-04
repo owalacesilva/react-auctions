@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -21,10 +21,28 @@ import messages from './messages';
 import AuctionListItem from '../../components/AuctionListItem/Loadable';
 import AuctionFeatured from '../../components/AuctionFeatured/Loadable';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { collection, getDocs } from 'firebase/firestore';
+import { store } from '../../firebase';
 
 export function AuctionListPage() {
   useInjectReducer({ key: 'auctionListPage', reducer });
   useInjectSaga({ key: 'auctionListPage', saga });
+  
+  const [products, setProducts] = useState([]);
+  const fetchProducts = async () => {
+    const querySnapshot = await getDocs(collection(store, 'products'));
+    let preProducts = [];
+
+    querySnapshot.forEach((doc) => {
+      preProducts.push({ ...doc.data(), id: doc.id })
+    });
+
+    setProducts(preProducts);
+  }
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <div>
@@ -42,16 +60,20 @@ export function AuctionListPage() {
                 <p className="desc">Escolha sua sorte</p>
               </div>
             </div>
-            <div className="col-12">
-              <Link to="sorteio/carro" className="text-decoration-none">
-                <AuctionFeatured />
-              </Link>
-            </div>
-            <div className="col-12">
-              <Link to="sorteio/carro" className="text-decoration-none">
-                <AuctionListItem />
-              </Link>
-            </div>
+            {products.length > 0 && (
+              <div className="col-12">
+                <Link to={`sorteio/${products[0].id}`} className="text-decoration-none">
+                  <AuctionFeatured product={products.shift()} />
+                </Link>
+              </div>
+            )}
+            {products.map((product, index) => (
+              <div key={index} className="col-12">
+                <Link to={`sorteio/${product.id}`} className="text-decoration-none">
+                  <AuctionListItem product={product} />
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>
