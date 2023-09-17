@@ -5,19 +5,20 @@ import A from './A';
 import Img from './Img';
 import HeaderLink from './HeaderLink';
 import messages from './messages';
-import LogoImage from '../../images/logo.png';
 import { Container, NavDropdown, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBars } from '@fortawesome/free-solid-svg-icons';
 
-function Header() {
+function Header({
+  settings
+}) {
   return (
     <header>
       <Navbar className="navbar" expand="lg" style={{ backgroundColor: "#161616" }}>
         <Container className="container container-common">
           <div className="navbar-header">
             <Navbar.Brand className="navbar-brand" href="/">
-              <img src={LogoImage} className="d-inline-block align-text-top" style={{ maxWidth: "150px" }} />
+              <img src={settings.logo_url} className="d-inline-block align-text-top" style={{ maxWidth: "150px" }} />
             </Navbar.Brand>
           </div>
           <div className="d-flex flex-grow-1 flex-md-grow-0 justify-content-between justify-content-sm-end pl-2 pt-2 pt-md-0">
