@@ -9,7 +9,6 @@ import React, { memo } from 'react';
 // import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
-import ProductImage from '../../images/product-image.jpg';
 import messages from './messages';
 
 function AuctionFeatured({ product }) {

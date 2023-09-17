@@ -8,7 +8,6 @@ import React, { memo } from 'react';
 // import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
-import ProductImage from './../../images/product-image.jpg';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 

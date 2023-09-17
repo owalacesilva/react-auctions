@@ -23,6 +23,8 @@ import AuctionFeatured from '../../components/AuctionFeatured/Loadable';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { collection, getDocs } from 'firebase/firestore';
 import { store } from '../../firebase';
+import CampaignFaq from '../../components/CampaignFaq';
+import CampaignWinners from '../../components/CampaignWinners';
 
 export function AuctionListPage() {
   useInjectReducer({ key: 'auctionListPage', reducer });
@@ -53,10 +55,10 @@ export function AuctionListPage() {
       <div className="black-bar fuse"></div>
       <div className="container container-common px-0">
         <div className="main-content py-3">
-          <div className="row">
+          <div className="row mb-3">
             <div className="col-12">
               <div className="heading">
-                <h1>⚡ Prêmios</h1>
+                <h1>⚡ Campanhas</h1>
                 <p className="desc">Escolha sua sorte</p>
               </div>
             </div>
@@ -75,6 +77,8 @@ export function AuctionListPage() {
               </div>
             ))}
           </div>
+          <CampaignWinners />
+          <CampaignFaq />
         </div>
       </div>
     </div>
