@@ -6,7 +6,7 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
@@ -20,7 +20,8 @@ import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import { useAuthState } from '../../firebase';
+import { store, useAuthState } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 // import GlobalStyle from '../../global-styles';
 
@@ -60,6 +61,24 @@ const UnauthenticatedRoute = ({ component: C, ...props }) => {
 }
 
 export default function App() {
+
+  const [settings, setSettings] = useState(null);
+
+  const getSettings = async () => {
+    const docRef = doc(store, 'settings', 'template');
+    const snapshot = await getDoc(docRef);
+
+    if (snapshot.exists()) {
+      setSettings(snapshot.data());
+    } else {
+      throw new Error('Settings not found');
+    }
+  }
+
+  useEffect(() => {
+    getSettings();
+  }, []);
+
   return (
     <AppWrapper>
       <Helmet
@@ -68,7 +87,7 @@ export default function App() {
       >
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
-      <Header />
+      {settings && <Header settings={settings} /> }
       <BrowserRouter>  
         <Switch>
           <Route exact path="/" component={AuctionListPage} />

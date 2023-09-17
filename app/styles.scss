@@ -178,3 +178,46 @@ html, body {
     flex-direction: column !important;
   }
 }
+
+.ganhadorItem_ganhadorContainer__1Sbxm {
+  display:-webkit-flex;
+  display:-moz-box;
+  display:flex;
+  -webkit-align-items:center;
+  -moz-box-align:center;
+  align-items:center;
+  -webkit-justify-content:center;
+  -moz-box-pack:center;
+  justify-content:center;
+  -webkit-box-shadow:0 4px 3px rgba(0,0,0,.08);
+  box-shadow:0 4px 3px rgba(0,0,0,.08);
+  background-color: white;
+  border-radius:10px;
+  padding:5px
+}
+.ganhadorItem_ganhadorContainer__1Sbxm .ganhadorItem_ganhadorSorteioImg__xu5bG {
+  position:absolute;
+  bottom:0
+}
+.ganhadorItem_ganhadorContainer__1Sbxm .ganhadorItem_ganhadorFoto__324kH {
+  border:2px solid #63ac49;
+  border-radius:10px;
+  position:relative;
+  margin-right:15px;
+  overflow:hidden;
+  height:100px;
+  min-width:80px;
+  max-width:80px
+}
+.ganhadorItem_ganhadorContainer__1Sbxm .ganhadorItem_ganhadorFoto__324kH img {
+  object-fit:cover
+}
+.ganhadorItem_ganhadorContainer__1Sbxm .ganhadorItem_ganhadorNome__2j_J- {
+  font-size:1.1em;
+  margin-bottom:0
+}
+.ganhadorItem_ganhadorContainer__1Sbxm .ganhadorItem_ganhadorDescricao__Z4kO2 {
+  font-size:.8em;
+  margin-bottom:0;
+  opacity:.85
+}
