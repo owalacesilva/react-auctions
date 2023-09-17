@@ -23,47 +23,74 @@ import CheckoutLogin from '../../components/CheckoutLogin';
 import CheckoutSignUp from '../../components/CheckoutSignUp';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase';
+import CheckoutLoggedUser from '../../components/CheckoutLoggedUser';
 
 export function CheckoutModal({
   data,
+  onClose,
   onRequestCreateOrder
 }) {
   useInjectReducer({ key: 'checkoutModal', reducer });
   useInjectSaga({ key: 'checkoutModal', saga });
 
   const [show, setShow] = useState(true);
-  const [user, setUser] = useState(null);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(auth, setUser);
+    onAuthStateChanged(auth, setLoggedUser);
   }, []);
 
   const handleClose = () => {
     setShow(false);
+    onClose(false);
   }
   const handleShow = () => setShow(true);
 
   const handleConfirmOrder = () => {
     setShow(false);
-    onRequestCreateOrder(user);
+    onRequestCreateOrder(loggedUser);
   }
 
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton={handleClose}>
         <Modal.Title>Checkout</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="checkout">
-          <CheckoutResume data={data} />
-          { /* <CheckoutLogin /> */ }
-          { /* <CheckoutSignUp /> */ }
-          <button 
-            type="button"
-            className="btn btn-success w-100"
-            onClick={handleConfirmOrder}>
-            Confirmar pedido
-          </button>
+          <CheckoutResume {...data} />
+          {
+            loggedUser ? (
+              <>
+                <CheckoutLoggedUser loggedUser={loggedUser} />
+                <button 
+                  type="button"
+                  className="btn btn-success w-100 mt-2"
+                  onClick={handleConfirmOrder}>
+                    Confirmar pedido
+                </button>
+                <a className="btn btn-link w-100 btn-sm text-decoration-none mt-2" onClick={() => {
+                  setLoggedUser(null)
+                  setIsSignUp(true)
+                }}>
+                  Utilizar outra conta
+                </a>
+              </>
+            ) : (
+              <>
+                { isSignUp ? (
+                  <CheckoutSignUp
+                    onChangeMode={() => setIsSignUp(false)}
+                    onSubmit={setLoggedUser} />
+                ) : (
+                  <CheckoutLogin
+                    onChangeMode={() => setIsSignUp(true)}
+                    onSubmit={setLoggedUser} />
+                )}
+              </>
+            )
+          }
         </div>
       </Modal.Body>
     </Modal>
