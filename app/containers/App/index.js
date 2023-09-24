@@ -14,7 +14,7 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import HomePage from 'containers/HomePage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import SignUpPage from 'containers/SignUpPage/Loadable';
-import AuctionListPage from 'containers/AuctionListPage/Loadable';
+import CampaignListPage from 'containers/CampaignListPage/Loadable';
 import AuctionDetailPage from 'containers/AuctionDetailPage/Loadable';
 import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
@@ -90,7 +90,7 @@ export default function App() {
       {settings && <Header settings={settings} /> }
       <BrowserRouter>  
         <Switch>
-          <Route exact path="/" component={AuctionListPage} />
+          <Route exact path="/" component={CampaignListPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/sorteio/:slug" component={AuctionDetailPage} />
