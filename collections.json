@@ -1,26 +1,11 @@
 {
   "configuracoes": {
     "nome_site": "Website",
-    "url_logo_site": "https://google.com",
+    "url_logo_site": "https://dashboard.sortecomigo.com.br/imagens/20221223_63a5d11a9b6ea.png",
     "codigo_pagamento": "admin@pixxx.com.br"
   },
-  "campanhas": [{
-    "data_registro": "2023-09-22",
-    "codigo_interno": "15414627791202320/244",
-    "titulo": "EDIÇÃO 244 - R$15.000,00",
-    "descricao": "Imagina ganhar R$15.000,00 com apenas 0,05 centavos?",
-    "preco": 25,
-    "condicoes": "CONDIÇÕES DE PARTICIPAÇÃO",
-    "data_sorteio": "2023-09-22T22:00",
-    "imagens": [{
-      "descricao": "Destaque",
-      "url_imagem": "https://google.com"
-    }]
-  }],
-  "pedidos": [{
-    "data_registro": "2023-09-22",
-    "codigo": "15414627791202320/244",
-    "produto": {
+  "campanhas": [
+    {
       "data_registro": "2023-09-22",
       "codigo_interno": "15414627791202320/244",
       "titulo": "EDIÇÃO 244 - R$15.000,00",
@@ -28,20 +13,58 @@
       "preco": 25,
       "condicoes": "CONDIÇÕES DE PARTICIPAÇÃO",
       "data_sorteio": "2023-09-22T22:00",
-      "imagens": [{
-        "descricao": "Destaque",
-        "url_imagem": "https://google.com"
-      }]
+      "imagens": [
+        {
+          "descricao": "Destaque",
+          "url_imagem": "https://dashboard.sortecomigo.com.br/imagens/_miniaturas/20230826_64ea2a27c03b0e728f09691a228789a603ff16e980df3.jpeg"
+        }
+      ]
     },
-    "cotas": [{}],
-    "status": "active",
-    "total": 100,
-    "apostador": {
-      "uid": "",
-      "nome": "Mauro Santos",
-      "email": "mauro.santos@email.com",
-      "telefone": "11986752549",
-      "url_foto": "https://google.com"
+    {
+      "data_registro": "2023-09-22",
+      "codigo_interno": "15414627791202320/244",
+      "titulo": "EDIÇÃO 300 - R$100.000,00",
+      "descricao": "Imagina ganhar R$15.000,00 com apenas 0,05 centavos?",
+      "preco": 115,
+      "condicoes": "CONDIÇÕES DE PARTICIPAÇÃO",
+      "data_sorteio": "2023-09-22T22:00",
+      "imagens": [
+        {
+          "descricao": "Destaque",
+          "url_imagem": "https://dashboard.sortecomigo.com.br/imagens/_miniaturas/20230826_64ea2a27c03b0e728f09691a228789a603ff16e980df3.jpeg"
+        }
+      ]
     }
-  }]
+  ],
+  "pedidos": [
+    {
+      "data_registro": "2023-09-22",
+      "codigo": "15414627791202320/244",
+      "produto": {
+        "data_registro": "2023-09-22",
+        "codigo_interno": "15414627791202320/244",
+        "titulo": "EDIÇÃO 244 - R$15.000,00",
+        "descricao": "Imagina ganhar R$15.000,00 com apenas 0,05 centavos?",
+        "preco": 25,
+        "condicoes": "CONDIÇÕES DE PARTICIPAÇÃO",
+        "data_sorteio": "2023-09-22T22:00",
+        "imagens": [
+          {
+            "descricao": "Destaque",
+            "url_imagem": "https://google.com"
+          }
+        ]
+      },
+      "cotas": [{}],
+      "status": "active",
+      "total": 100,
+      "apostador": {
+        "uid": "",
+        "nome": "Mauro Santos",
+        "email": "mauro.santos@email.com",
+        "telefone": "11986752549",
+        "url_foto": "https://google.com"
+      }
+    }
+  ]
 }
