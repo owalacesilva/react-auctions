@@ -15,7 +15,7 @@ function CampaignItem({ campaign }) {
         <div className="row align-items-start g-0">
           <div className="col-md-3 col-4 px-2 py-2">
             <CampaignImage
-              images={campaign.imagens}
+              imagens={campaign.imagens}
               additionalClasses="img-fluid rounded"
             />
           </div>

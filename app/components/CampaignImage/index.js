@@ -9,21 +9,18 @@ import PropTypes from 'prop-types';
 
 function CampaignImage({ imagens, additionalClasses }) {
   const getUrlImage = () => {
-    if (!imagens) return null;
+    if (!Array.isArray(imagens)) return null;
 
     const image = imagens.shift();
 
-    return image.url_imagem;
+    return image ? image.url_imagem : null;
   };
 
   return <img src={getUrlImage()} className={additionalClasses} />;
 }
 
 CampaignImage.propTypes = {
-  imagens: PropTypes.arrayOf({
-    descricao: PropTypes.string.isRequired,
-    url_imagem: PropTypes.string.isRequired,
-  }),
+  imagens: PropTypes.any.isRequired,
   additionalClasses: PropTypes.string,
 };
 

@@ -21,7 +21,7 @@ function CampaignFeatured({ campaign }) {
             <div className="carousel-item active">
               <div className="card-feature-image">
                 <CampaignImage
-                  images={campaign.imagens}
+                  imagens={campaign.imagens}
                   additionalClasses="card-img-top"
                 />
               </div>
@@ -29,7 +29,7 @@ function CampaignFeatured({ campaign }) {
             <div className="carousel-item">
               <div className="card-feature-image">
                 <CampaignImage
-                  images={campaign.imagens}
+                  imagens={campaign.imagens}
                   additionalClasses="card-img-top"
                 />
               </div>
@@ -37,7 +37,7 @@ function CampaignFeatured({ campaign }) {
             <div className="carousel-item">
               <div className="card-feature-image">
                 <CampaignImage
-                  images={campaign.imagens}
+                  imagens={campaign.imagens}
                   additionalClasses="card-img-top"
                 />
               </div>
