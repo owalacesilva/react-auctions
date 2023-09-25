@@ -70,7 +70,13 @@ export function CampaignListPage() {
               to={`sorteio/${campaign.id}`}
               className="text-decoration-none"
             >
-              <CampaignItem product={campaign} />
+              <CampaignItem
+                campaign={{
+                  titulo: campaign.titulo,
+                  descricao: campaign.descricao,
+                  imagens: campaign.imagens,
+                }}
+              />
             </Link>
           </div>
         ),
