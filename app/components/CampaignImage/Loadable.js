@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for AuctionFeatured
+ * Asynchronously loads the component for CampaignImage
  *
  */
 

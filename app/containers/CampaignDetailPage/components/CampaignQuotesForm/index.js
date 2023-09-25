@@ -5,35 +5,32 @@
  */
 
 import React, { memo, useState } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import CurrencyFormat from '../CurrencyFormat';
+import CurrencyFormat from '../../../../components/CurrencyFormat';
 
-function CampaignQuotesForm({
-  costPrice,
-  onFormSubmit
-}) {
+function CampaignQuotesForm({ costPrice, onFormSubmit }) {
   const [quotesQuantity, setQuotesQuantity] = useState(0);
 
-  const addQuote = (quantity) => (event) => {
+  const addQuote = quantity => () => {
     if (quotesQuantity >= 500) return false;
 
     setQuotesQuantity(quotesQuantity + quantity);
-  }
+  };
 
-  const removeQuote = (quantity) => (event) => {
+  const removeQuote = quantity => () => {
     if (quotesQuantity == 1) return false;
 
     setQuotesQuantity(quotesQuantity - quantity);
-  }
+  };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
 
     onFormSubmit(quotesQuantity);
-  }
+  };
 
   return (
     <div>
@@ -48,7 +45,10 @@ function CampaignQuotesForm({
               </div>
               <div className="d-flex align-items-center justify-content-center flex-column">
                 <div className="sale-item">
-                  <div className="item p-2 me-2 mb-2 flex-column" onClick={addQuote(5)}>
+                  <div
+                    className="item p-2 me-2 mb-2 flex-column"
+                    onClick={addQuote(5)}
+                  >
                     <h3 className="mb-1">
                       <small className="text-dark">+</small>05
                     </h3>
@@ -56,7 +56,10 @@ function CampaignQuotesForm({
                       Selecionar
                     </p>
                   </div>
-                  <div className="item p-2 me-2 mb-2 flex-column popular" onClick={addQuote(10)}>
+                  <div
+                    className="item p-2 me-2 mb-2 flex-column popular"
+                    onClick={addQuote(10)}
+                  >
                     <h3 className="mb-1">
                       <small className="text-dark">+</small>10
                     </h3>
@@ -64,7 +67,10 @@ function CampaignQuotesForm({
                       Selecionar
                     </p>
                   </div>
-                  <div className="item p-2 me-2 mb-2 flex-column" onClick={addQuote(50)}>
+                  <div
+                    className="item p-2 me-2 mb-2 flex-column"
+                    onClick={addQuote(50)}
+                  >
                     <h3 className="mb-1">
                       <small className="text-dark">+</small>50
                     </h3>
@@ -72,7 +78,10 @@ function CampaignQuotesForm({
                       Selecionar
                     </p>
                   </div>
-                  <div className="item p-2 me-2 mb-2 flex-column" onClick={addQuote(100)}>
+                  <div
+                    className="item p-2 me-2 mb-2 flex-column"
+                    onClick={addQuote(100)}
+                  >
                     <h3 className="mb-1">
                       <small className="text-dark">+</small>100
                     </h3>
@@ -84,7 +93,10 @@ function CampaignQuotesForm({
                 <div className="text-center">
                   <div className="vendasExpressNums d-flex align-items-center">
                     <div className="left pointer">
-                      <div className="addNumero numeroChange text-muted" onClick={removeQuote(1)}>
+                      <div
+                        className="addNumero numeroChange text-muted"
+                        onClick={removeQuote(1)}
+                      >
                         <FontAwesomeIcon icon={faMinus} size="xs" />
                       </div>
                     </div>
@@ -100,7 +112,10 @@ function CampaignQuotesForm({
                       />
                     </div>
                     <div className="right pointer">
-                      <div className="removeNumero numeroChange text-muted" onClick={addQuote(1)}>
+                      <div
+                        className="removeNumero numeroChange text-muted"
+                        onClick={addQuote(1)}
+                      >
                         <FontAwesomeIcon icon={faPlus} size="xs" />
                       </div>
                     </div>
@@ -129,6 +144,9 @@ function CampaignQuotesForm({
   );
 }
 
-CampaignQuotesForm.propTypes = {};
+CampaignQuotesForm.propTypes = {
+  costPrice: PropTypes.number.isRequired,
+  onFormSubmit: PropTypes.func.isRequired,
+};
 
 export default memo(CampaignQuotesForm);

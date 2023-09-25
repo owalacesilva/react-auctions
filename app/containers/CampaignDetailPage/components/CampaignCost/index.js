@@ -6,11 +6,9 @@
 
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import CurrencyFormat from '../CurrencyFormat';
+import CurrencyFormat from '../../../../components/CurrencyFormat';
 
-function CampaignCost({ product }) {
-  const { cost_price: costPrice } = product;
-
+function CampaignCost({ costPrice }) {
   return (
     <div>
       por apenas{' '}
@@ -21,6 +19,8 @@ function CampaignCost({ product }) {
   );
 }
 
-CampaignCost.propTypes = {};
+CampaignCost.propTypes = {
+  costPrice: PropTypes.number.isRequired,
+};
 
 export default memo(CampaignCost);

@@ -15,7 +15,7 @@ import HomePage from 'containers/HomePage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import SignUpPage from 'containers/SignUpPage/Loadable';
 import CampaignListPage from 'containers/CampaignListPage/Loadable';
-import AuctionDetailPage from 'containers/AuctionDetailPage/Loadable';
+import CampaignDetailPage from 'containers/CampaignDetailPage/Loadable';
 import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
@@ -93,7 +93,7 @@ export default function App() {
           <Route exact path="/" component={CampaignListPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
-          <Route path="/sorteio/:slug" component={AuctionDetailPage} />
+          <Route path="/sorteio/:slug" component={CampaignDetailPage} />
           <Route path="/order/:orderId" component={CheckoutPage}/>
           <Route path="" component={NotFoundPage} />
         </Switch>

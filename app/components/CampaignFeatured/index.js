@@ -1,17 +1,14 @@
 /**
  *
- * AuctionFeatured
+ * CampaignFeatured
  *
  */
 
 import React, { memo } from 'react';
-// import PropTypes from 'prop-types';
-// import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import CampaignImage from '../CampaignImage/Loadable';
 
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
-function AuctionFeatured({ product }) {
+function CampaignFeatured({ campaign }) {
   return (
     <div>
       <div className="card mb-2">
@@ -23,17 +20,26 @@ function AuctionFeatured({ product }) {
           <div className="carousel-inner">
             <div className="carousel-item active">
               <div className="card-feature-image">
-                <img src={product.images.url} className="card-img-top" />
+                <CampaignImage
+                  images={campaign.imagens}
+                  additionalClasses="card-img-top"
+                />
               </div>
             </div>
             <div className="carousel-item">
               <div className="card-feature-image">
-                <img src={product.images.url} className="card-img-top" />
+                <CampaignImage
+                  images={campaign.imagens}
+                  additionalClasses="card-img-top"
+                />
               </div>
             </div>
             <div className="carousel-item">
               <div className="card-feature-image">
-                <img src={product.images.url} className="card-img-top" />
+                <CampaignImage
+                  images={campaign.imagens}
+                  additionalClasses="card-img-top"
+                />
               </div>
             </div>
           </div>
@@ -57,8 +63,8 @@ function AuctionFeatured({ product }) {
           </button>
         </div>
         <div className="card-body p-2">
-          <h5 className="card-title">{product.title}</h5>
-          <p className="card-text">{product.description}</p>
+          <h5 className="card-title">{campaign.titulo}</h5>
+          <p className="card-text">{campaign.descricao}</p>
           <span className="badge bg-dark font-xsss">
             Corre que está acabando!
           </span>
@@ -68,6 +74,15 @@ function AuctionFeatured({ product }) {
   );
 }
 
-AuctionFeatured.propTypes = {};
+CampaignFeatured.propTypes = {
+  campaign: {
+    titulo: PropTypes.string,
+    descricao: PropTypes.string,
+    imagens: PropTypes.arrayOf({
+      descricao: PropTypes.string.isRequired,
+      url_imagem: PropTypes.string.isRequired,
+    }),
+  },
+};
 
-export default memo(AuctionFeatured);
+export default memo(CampaignFeatured);

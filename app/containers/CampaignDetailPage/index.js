@@ -4,52 +4,58 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import makeSelectAuctionDetailPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import AuctionFeatured from '../../components/AuctionFeatured/Loadable';
+import CampaignFeatured from '../../components/CampaignFeatured/Loadable';
 import CheckoutModal from '../CheckoutModal/Loadable';
-import { addDoc, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { store } from '../../firebase';
 import { createStaticPix, hasError } from 'pix-utils';
-import CampaignQuotesForm from '../../components/CampaignQuotesForm';
-import CampaignCost from '../../components/CampaignCost';
-import CampaignDateTime from '../../components/CampaignDateTime';
+import CampaignCost from './components/CampaignCost';
+import CampaignDateTime from './components/CampaignDateTime';
+import CampaignQuotesForm from './components/CampaignQuotesForm';
 
-export function AuctionDetailPage({
-  match,
-  history
-}) {
+const fetchCampaign = async slug => {
+  const docRef = doc(store, 'campanhas', slug);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    throw new Error('Product not found');
+  }
+
+  return snapshot.data();
+};
+
+export function CampaignDetailPage({ match, history }) {
   useInjectReducer({ key: 'auctionDetailPage', reducer });
   useInjectSaga({ key: 'auctionDetailPage', saga });
-  
-  const { slug: productSlug } = match.params;
-  const [product, setProduct] = useState(null);
+
+  const { slug } = match.params;
+  const [campaign, setCampaign] = useState(null);
   const [quotesQuantity, setQuotesQuantity] = useState(1);
   const [openCheckout, setOpenCheckout] = useState(false);
 
-  const getProduct = async (slug) => {
-    const docRef = doc(store, 'products', slug);
-    const snapshot = await getDoc(docRef);
+  const fetchCampaignWrapper = useCallback(async () => {
+    const campaign = await fetchCampaign(slug); // apiCampaign.getOneCampaign();
 
-    if (snapshot.exists()) {
-      setProduct(snapshot.data());
-    } else {
-      throw new Error('Product not found');
-    }
-  }
+    setCampaign(campaign);
+  }, []);
 
-  const createOrder = async ({ providerData /* loggedUser */}) => {
+  useEffect(() => {
+    fetchCampaignWrapper();
+  }, [slug]);
+
+  const createOrder = async ({ providerData /* loggedUser */ }) => {
     const userData = providerData.shift();
 
     const pix = createStaticPix({
@@ -59,7 +65,7 @@ export function AuctionDetailPage({
       infoAdicional: 'Gerado por Pix',
       transactionAmount: quotesQuantity * product.cost_price,
     });
-    
+
     if (hasError(pix)) {
       throw new Error('Error pix');
     }
@@ -77,26 +83,22 @@ export function AuctionDetailPage({
       },
       // ...generateQuotes(product, quotesQuantity)
       quotes: quotesQuantity, // TODO: generate quotes
-      total: quotesQuantity * product.cost_price
+      total: quotesQuantity * product.cost_price,
     });
 
     return docRef;
-  }
+  };
 
-  const handleFormSubmit = (quantity) => {
+  const handleFormSubmit = quantity => {
     setQuotesQuantity(quantity);
     setOpenCheckout(true);
-  }
+  };
 
-  const handleCreateOrder = (loggedUser) => {
-    createOrder(loggedUser).then((newOrder) => {
+  const handleCreateOrder = loggedUser => {
+    createOrder(loggedUser).then(newOrder => {
       history.push(`/order/${newOrder.id}`);
     });
-  }
-
-  useEffect(() => {
-    getProduct(productSlug);
-  }, [productSlug]);
+  };
 
   return (
     <div>
@@ -108,14 +110,24 @@ export function AuctionDetailPage({
       <div className="container container-common px-0">
         <div className="main-content py-3">
           <div>
-            {product && <AuctionFeatured product={product} /> }
+            {campaign && (
+              <CampaignFeatured
+                campaign={{
+                  titulo: campaign.titulo,
+                  descricao: campaign.descricao,
+                  imagens: campaign.imagens,
+                }}
+              />
+            )}
           </div>
           <div className="row">
             <div className="col-12 text-center mb-3">
-              { product && <CampaignCost product={product} /> }
+              {campaign && <CampaignCost costPrice={campaign.preco} />}
             </div>
             <div className="col-6 mb-3">
-              { product && <CampaignDateTime product={product} /> }
+              {campaign && (
+                <CampaignDateTime optInDate={campaign.data_sorteio} />
+              )}
             </div>
             <div className="col-6" />
             <div className="col-12">
@@ -130,31 +142,29 @@ export function AuctionDetailPage({
               <span>Ver meus números</span>
             </button>
           </div>
-          {
-            product && (
-              <CampaignQuotesForm
-                costPrice={product.cost_price}
-                onFormSubmit={handleFormSubmit} />
-            )
-          }
+          {campaign && (
+            <CampaignQuotesForm
+              costPrice={campaign.preco}
+              onFormSubmit={handleFormSubmit}
+            />
+          )}
         </div>
       </div>
-      {
-        openCheckout && (
-          <CheckoutModal
-            data={{
-              product,
-              quotesQuantity
-            }}
-            onRequestCreateOrder={handleCreateOrder}
-            onClose={() => setOpenCheckout(false)} />
-        )
-      }
+      {openCheckout && (
+        <CheckoutModal
+          data={{
+            product: campaign,
+            quotesQuantity,
+          }}
+          onRequestCreateOrder={handleCreateOrder}
+          onClose={() => setOpenCheckout(false)}
+        />
+      )}
     </div>
   );
 }
 
-AuctionDetailPage.propTypes = {
+CampaignDetailPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -176,4 +186,4 @@ const withConnect = connect(
 export default compose(
   withConnect,
   memo,
-)(AuctionDetailPage);
+)(CampaignDetailPage);
