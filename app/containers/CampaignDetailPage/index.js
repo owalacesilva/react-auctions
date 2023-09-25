@@ -46,9 +46,9 @@ export function CampaignDetailPage({ match, history }) {
   const [openCheckout, setOpenCheckout] = useState(false);
 
   const fetchCampaignWrapper = useCallback(async () => {
-    const campaign = await fetchCampaign(slug); // apiCampaign.getOneCampaign();
+    const document = await fetchCampaign(slug); // apiCampaign.getOneCampaign();
 
-    setCampaign(campaign);
+    setCampaign(document);
   }, []);
 
   useEffect(() => {
@@ -63,27 +63,27 @@ export function CampaignDetailPage({ match, history }) {
       merchantCity: 'Rio de Janeiro',
       pixKey: 'nubank@gmail.com',
       infoAdicional: 'Gerado por Pix',
-      transactionAmount: quotesQuantity * product.cost_price,
+      transactionAmount: quotesQuantity * campaign.preco,
     });
 
     if (hasError(pix)) {
       throw new Error('Error pix');
     }
 
-    const collectionRef = collection(store, 'orders');
+    const collectionRef = collection(store, 'pedidos');
     const docRef = await addDoc(collectionRef, {
-      created_at: new Date(), // TODO: use firebase api
-      user_buyer: userData,
-      product: product,
+      data_registro: new Date(), // TODO: use firebase api
+      produto: campaign,
+      cotas: quotesQuantity, // TODO: generate quotes
       status: 'active',
-      // ...createPaymentInvoice(product)
-      payment: {
-        method: 'PIX',
-        invoice_token: pix.toBRCode(),
-      },
       // ...generateQuotes(product, quotesQuantity)
-      quotes: quotesQuantity, // TODO: generate quotes
-      total: quotesQuantity * product.cost_price,
+      total: quotesQuantity * campaign.preco,
+      apostador: userData,
+      // ...createPaymentInvoice(product)
+      pagamento: {
+        metodo: 'PIX',
+        codigo: pix.toBRCode(),
+      },
     });
 
     return docRef;
@@ -96,7 +96,7 @@ export function CampaignDetailPage({ match, history }) {
 
   const handleCreateOrder = loggedUser => {
     createOrder(loggedUser).then(newOrder => {
-      history.push(`/order/${newOrder.id}`);
+      history.push(`/orders/${newOrder.id}`);
     });
   };
 
@@ -152,10 +152,8 @@ export function CampaignDetailPage({ match, history }) {
       </div>
       {openCheckout && (
         <CheckoutModal
-          data={{
-            product: campaign,
-            quotesQuantity,
-          }}
+          campaignName={campaign.titulo}
+          quotesQuantity={quotesQuantity}
           onRequestCreateOrder={handleCreateOrder}
           onClose={() => setOpenCheckout(false)}
         />

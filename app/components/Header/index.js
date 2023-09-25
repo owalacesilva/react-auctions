@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { Container, NavDropdown, Navbar } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart, faBars } from '@fortawesome/free-solid-svg-icons';
 import A from './A';
 import Img from './Img';
 import HeaderLink from './HeaderLink';
 import messages from './messages';
-import { Container, NavDropdown, Navbar } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faBars } from '@fortawesome/free-solid-svg-icons';
 
 function Header({ settings }) {
   return (

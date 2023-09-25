@@ -4,31 +4,24 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import { doc, getDoc } from 'firebase/firestore';
 import makeSelectCheckoutPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
-import AuctionListItem from '../../components/AuctionListItem/Loadable';
-import QRCode from 'react-qr-code';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, store } from '../../firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import CheckoutOrderPaymentInfo from '../../components/CheckoutOrderPaymentInfo';
-import CheckoutDetailProduct from '../../components/CheckoutDetailProduct';
+import { store } from '../../firebase';
+import CheckoutOrderPaymentInfo from './components/CheckoutOrderPaymentInfo';
+import CheckoutDetailProduct from './components/CheckoutDetailProduct';
 
-export function CheckoutPage({
-  match
-}) {
+export function CheckoutPage({ match }) {
   useInjectReducer({ key: 'checkoutPage', reducer });
   useInjectSaga({ key: 'checkoutPage', saga });
 
@@ -36,22 +29,22 @@ export function CheckoutPage({
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    getOrderById(orderId);
-  }, [orderId]);
+    getOrderById();
+  }, [getOrderById]);
 
-  const getOrderById = async (orderId) => {
-    const docRef = doc(store, 'orders', orderId);
+  const getOrderById = useCallback(async () => {
+    const docRef = doc(store, 'pedidos', orderId);
     const snapshot = await getDoc(docRef);
 
     if (snapshot.exists()) {
       setOrder({
         ...snapshot.data(),
-        id: orderId
+        id: orderId,
       });
     } else {
       throw new Error('Order not found');
     }
-  }
+  }, [orderId]);
 
   return (
     <div>
@@ -59,14 +52,16 @@ export function CheckoutPage({
         <title>CheckoutPage</title>
         <meta name="description" content="Description of CheckoutPage" />
       </Helmet>
-      <div className="black-bar fuse"></div>
+      <div className="black-bar fuse" />
       <div className="container container-common px-0">
         <div className="main-content py-3">
           <div className="compra-status">
             <div className="app-alerta-msg mb-2">
-              <i className="app-alerta-msg--icone bi bi-check-circle text-warning"></i>
+              <i className="app-alerta-msg--icone bi bi-check-circle text-warning" />
               <div className="app-alerta-msg--txt">
-                <h3 className="app-alerta-msg--titulo">Aguardando Pagamento!</h3>
+                <h3 className="app-alerta-msg--titulo">
+                  Aguardando Pagamento!
+                </h3>
                 <p>Finalize o pagamento</p>
               </div>
             </div>
@@ -80,7 +75,7 @@ export function CheckoutPage({
 }
 
 CheckoutPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  match: PropTypes.any.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

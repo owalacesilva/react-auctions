@@ -20,8 +20,8 @@ import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import { store, useAuthState } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { store, useAuthState } from '../../firebase';
 
 // import GlobalStyle from '../../global-styles';
 
@@ -93,11 +93,11 @@ export default function App() {
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/sorteio/:slug" component={CampaignDetailPage} />
-          <Route path="/order/:orderId" component={CheckoutPage} />
+          <Route path="/orders/:orderId" component={CheckoutPage} />
           <Route path="" component={NotFoundPage} />
         </Switch>
       </BrowserRouter>
-      {/*<GlobalStyle />*/}
+      {/* <GlobalStyle /> */}
     </AppWrapper>
   );
 }

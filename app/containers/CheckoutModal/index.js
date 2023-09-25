@@ -7,28 +7,27 @@
 import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import { Modal } from 'react-bootstrap';
+import { onAuthStateChanged } from 'firebase/auth';
 import makeSelectCheckoutModal from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { Modal } from 'react-bootstrap';
-import CheckoutResume from '../../components/CheckoutResume';
-import CheckoutLogin from '../../components/CheckoutLogin';
-import CheckoutSignUp from '../../components/CheckoutSignUp';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase';
-import CheckoutLoggedUser from '../../components/CheckoutLoggedUser';
+import CheckoutResume from './components/CheckoutResume';
+import CheckoutLogin from './components/CheckoutLogin';
+import CheckoutSignUp from './components/CheckoutSignUp';
+import CheckoutLoggedUser from './components/CheckoutLoggedUser';
 
 export function CheckoutModal({
-  data,
+  campaignName,
+  quotesQuantity,
   onClose,
-  onRequestCreateOrder
+  onRequestCreateOrder,
 }) {
   useInjectReducer({ key: 'checkoutModal', reducer });
   useInjectSaga({ key: 'checkoutModal', saga });
@@ -44,13 +43,12 @@ export function CheckoutModal({
   const handleClose = () => {
     setShow(false);
     onClose(false);
-  }
-  const handleShow = () => setShow(true);
+  };
 
   const handleConfirmOrder = () => {
     setShow(false);
     onRequestCreateOrder(loggedUser);
-  }
+  };
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -59,38 +57,45 @@ export function CheckoutModal({
       </Modal.Header>
       <Modal.Body>
         <div className="checkout">
-          <CheckoutResume {...data} />
-          {
-            loggedUser ? (
-              <>
-                <CheckoutLoggedUser loggedUser={loggedUser} />
-                <button 
-                  type="button"
-                  className="btn btn-success w-100 mt-2"
-                  onClick={handleConfirmOrder}>
-                    Confirmar pedido
-                </button>
-                <a className="btn btn-link w-100 btn-sm text-decoration-none mt-2" onClick={() => {
-                  setLoggedUser(null)
-                  setIsSignUp(true)
-                }}>
-                  Utilizar outra conta
-                </a>
-              </>
-            ) : (
-              <>
-                { isSignUp ? (
-                  <CheckoutSignUp
-                    onChangeMode={() => setIsSignUp(false)}
-                    onSubmit={setLoggedUser} />
-                ) : (
-                  <CheckoutLogin
-                    onChangeMode={() => setIsSignUp(true)}
-                    onSubmit={setLoggedUser} />
-                )}
-              </>
-            )
-          }
+          <CheckoutResume
+            campaignName={campaignName}
+            quotesQuantity={quotesQuantity}
+          />
+          {loggedUser ? (
+            <>
+              <CheckoutLoggedUser loggedUser={loggedUser} />
+              <button
+                type="button"
+                className="btn btn-success w-100 mt-2"
+                onClick={handleConfirmOrder}
+              >
+                Confirmar pedido
+              </button>
+              <a
+                className="btn btn-link w-100 btn-sm text-decoration-none mt-2"
+                onClick={() => {
+                  setLoggedUser(null);
+                  setIsSignUp(true);
+                }}
+              >
+                Utilizar outra conta
+              </a>
+            </>
+          ) : (
+            <>
+              {isSignUp ? (
+                <CheckoutSignUp
+                  onChangeMode={() => setIsSignUp(false)}
+                  onSubmit={setLoggedUser}
+                />
+              ) : (
+                <CheckoutLogin
+                  onChangeMode={() => setIsSignUp(true)}
+                  onSubmit={setLoggedUser}
+                />
+              )}
+            </>
+          )}
         </div>
       </Modal.Body>
     </Modal>
@@ -98,7 +103,10 @@ export function CheckoutModal({
 }
 
 CheckoutModal.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  campaignName: PropTypes.string.isRequired,
+  quotesQuantity: PropTypes.number.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onRequestCreateOrder: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
