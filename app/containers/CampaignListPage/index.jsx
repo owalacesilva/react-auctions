@@ -19,45 +19,41 @@ import makeSelectCampaignListPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import { store } from '../../firebase';
-import AuctionListItem from '../../components/AuctionListItem/Loadable';
-import AuctionFeatured from '../../components/AuctionFeatured/Loadable';
+import CampaignItem from '../../components/CampaignItem/Loadable';
+import CampaignFeatured from '../../components/CampaignFeatured/Loadable';
 import CampaignFaq from '../../components/CampaignFaq';
 import CampaignWinners from '../../components/CampaignWinners';
-import { ICampaign, IApiCampaign } from '../../interfaces/campaign.interface';
 
-// const fetchCampaignList = async () => {
-//   const querySnapshot = await getDocs(collection(store, 'campanhas'));
-//   const preCampaigns: Array<ICampaign | null> = [];
+const fetchCampaignList = async () => {
+  const querySnapshot = await getDocs(collection(store, 'campanhas'));
+  const preCampaigns = [];
 
-//   querySnapshot.forEach(({ id, ...rest }) => {
-//     return preCampaigns.push({
-//       id,
-//       codigo_interno: '',
-//       titulo: '',
-//     });
-//   });
+  querySnapshot.forEach(doc => {
+    return preCampaigns.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
 
-//   return preCampaigns;
-// }
+  return preCampaigns;
+};
 
-export function CampaignListPage({ apiCampaign }) {
+export function CampaignListPage() {
   useInjectReducer({ key: 'CampaignListPage', reducer });
   useInjectSaga({ key: 'CampaignListPage', saga });
 
-  const [featuredCampaign, setFeaturedCampaign] = useState<ICampaign | null>(
-    null,
-  );
-  const [campaigns, setCampaigns] = useState<Array<ICampaign | null>>([]);
+  const [featuredCampaign, setFeaturedCampaign] = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
 
   const fetchCampaignsWrapper = useCallback(async () => {
-    const campaignList = await apiCampaign.getCampaignList();
+    const campaignList = await fetchCampaignList(); // apiCampaign.getCampaignList();
 
     if (campaignList.length > 0) {
       setFeaturedCampaign(campaignList.shift());
     }
 
     setCampaigns(campaignList);
-  }, [apiCampaign]);
+  }, []);
 
   useEffect(() => {
     fetchCampaignsWrapper();
@@ -66,14 +62,19 @@ export function CampaignListPage({ apiCampaign }) {
   const renderCampaignList = () => {
     if (!campaigns) return null;
 
-    return campaigns.map(campaign => (
+    return campaigns.map(
+      campaign =>
         campaign && (
           <div key={campaign.id} className="col-12">
-        <Link to={`sorteio/${campaign.id}`} className="text-decoration-none">
-          <AuctionListItem product={campaign} />
-        </Link>
-      </div>
-    ))
+            <Link
+              to={`sorteio/${campaign.id}`}
+              className="text-decoration-none"
+            >
+              <CampaignItem product={campaign} />
+            </Link>
+          </div>
+        ),
+    );
   };
 
   return (
@@ -98,7 +99,13 @@ export function CampaignListPage({ apiCampaign }) {
                   to={`sorteio/${featuredCampaign.id}`}
                   className="text-decoration-none"
                 >
-                  <AuctionFeatured product={featuredCampaign} />
+                  <CampaignFeatured
+                    campaign={{
+                      titulo: featuredCampaign.titulo,
+                      descricao: featuredCampaign.descricao,
+                      imagens: featuredCampaign.imagens,
+                    }}
+                  />
                 </Link>
               </div>
             )}
@@ -112,9 +119,7 @@ export function CampaignListPage({ apiCampaign }) {
   );
 }
 
-CampaignListPage.propTypes = {
-  apiCampaign: PropTypes.object.isRequired,
-};
+CampaignListPage.propTypes = {};
 
 const mapStateToProps = createStructuredSelector({
   CampaignListPage: makeSelectCampaignListPage(),
