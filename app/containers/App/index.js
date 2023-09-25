@@ -36,7 +36,7 @@ const AppWrapper = styled.div`
 
 const AuthenticatedRoute = ({ component: C, ...props }) => {
   const { isAuthenticated } = useAuthState();
-  console.log(`AuthenticatedRoute: ${isAuthenticated}`)
+  console.log(`AuthenticatedRoute: ${isAuthenticated}`);
   return (
     <Route
       {...props}
@@ -44,12 +44,12 @@ const AuthenticatedRoute = ({ component: C, ...props }) => {
         isAuthenticated ? <C {...routeProps} /> : <Redirect to="/login" />
       }
     />
-  )
-}
+  );
+};
 
 const UnauthenticatedRoute = ({ component: C, ...props }) => {
   const { isAuthenticated } = useAuthState();
-  console.log(`UnauthenticatedRoute: ${isAuthenticated}`)
+  console.log(`UnauthenticatedRoute: ${isAuthenticated}`);
   return (
     <Route
       {...props}
@@ -57,15 +57,17 @@ const UnauthenticatedRoute = ({ component: C, ...props }) => {
         !isAuthenticated ? <C {...routeProps} /> : <Redirect to="/" />
       }
     />
-  )
-}
+  );
+};
 
 export default function App() {
-
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState({
+    nome_site: '',
+    url_logo_site: '',
+  });
 
   const getSettings = async () => {
-    const docRef = doc(store, 'settings', 'template');
+    const docRef = doc(store, 'configuracoes', 'template');
     const snapshot = await getDoc(docRef);
 
     if (snapshot.exists()) {
@@ -73,32 +75,29 @@ export default function App() {
     } else {
       throw new Error('Settings not found');
     }
-  }
+  };
 
   useEffect(() => {
     getSettings();
-  }, []);
+  }, [getSettings]);
 
   return (
     <AppWrapper>
-      <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
-      >
+      <Helmet titleTemplate={settings.nome_site}>
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
-      {settings && <Header settings={settings} /> }
-      <BrowserRouter>  
+      {settings && <Header settings={settings} />}
+      <BrowserRouter>
         <Switch>
           <Route exact path="/" component={CampaignListPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/sorteio/:slug" component={CampaignDetailPage} />
-          <Route path="/order/:orderId" component={CheckoutPage}/>
+          <Route path="/order/:orderId" component={CheckoutPage} />
           <Route path="" component={NotFoundPage} />
         </Switch>
       </BrowserRouter>
-      { /*<GlobalStyle />*/ }
+      {/*<GlobalStyle />*/}
     </AppWrapper>
   );
 }
