@@ -1,8 +1,12 @@
 {
   "configuracoes": {
-    "nome_site": "Website",
-    "url_logo_site": "https://dashboard.sortecomigo.com.br/imagens/20221223_63a5d11a9b6ea.png",
-    "codigo_pagamento": "admin@pixxx.com.br"
+    "template": {
+      "nome_site": "Website",
+      "url_logo_site": "https://dashboard.sortecomigo.com.br/imagens/20221223_63a5d11a9b6ea.png"
+    },
+    "pagamentos": {
+      "codigo_pagamento": "admin@pixxx.com.br"
+    }
   },
   "campanhas": [
     {
